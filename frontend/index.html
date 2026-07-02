@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo Application</title>
+</head>
+
+<body>
+
+    <h1>Todo List Application</h1>
+
+    <input type="text" id="taskInput" placeholder="Enter a task">
+    <button onclick="addTask()">Add Task</button>
+
+    <ul id="taskList"></ul>
+
+    <script>
+        // Replace this with your API Gateway endpoint
+        const apiUrl = "YOUR_API_GATEWAY_URL/tasks";
+
+        async function loadTasks() {
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+
+            const list = document.getElementById("taskList");
+            list.innerHTML = "";
+
+            data.forEach(task => {
+                const li = document.createElement("li");
+                li.innerText = task.task;
+                list.appendChild(li);
+            });
+        }
+
+        async function addTask() {
+            const task = document.getElementById("taskInput").value;
+
+            await fetch(apiUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ task })
+            });
+
+            document.getElementById("taskInput").value = "";
+            loadTasks();
+        }
+
+        loadTasks();
+    </script>
+
+</body>
+</html>
